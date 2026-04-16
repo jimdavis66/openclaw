@@ -2,7 +2,7 @@
 # Extend the official gateway image with CLIs required by bundled OpenClaw skills.
 # Bump OPENCLAW_BASE in compose build args when you upgrade the upstream tag.
 
-ARG OPENCLAW_BASE=ghcr.io/openclaw/openclaw:2026.4.9
+ARG OPENCLAW_BASE=ghcr.io/openclaw/openclaw:latest
 
 FROM cgr.dev/chainguard/go:latest-dev AS gobins
 ENV GOTOOLCHAIN=auto \

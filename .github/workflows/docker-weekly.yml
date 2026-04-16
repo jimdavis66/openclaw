@@ -39,12 +39,23 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Resolve upstream `latest` digest
+      - name: Resolve upstream `latest` digest and release version
         id: upstream
         run: |
+          set -euo pipefail
           DIGEST="$(docker buildx imagetools inspect "${OPENCLAW_IMAGE}:latest" --format '{{.Manifest.Digest}}')"
           echo "digest=${DIGEST}" >> "$GITHUB_OUTPUT"
-          echo "OPENCLAW_BASE=${OPENCLAW_IMAGE}:latest@${DIGEST}" >> "$GITHUB_ENV"
+          PINNED="${OPENCLAW_IMAGE}:latest@${DIGEST}"
+          echo "OPENCLAW_BASE=${PINNED}" >> "$GITHUB_ENV"
+
+          JSON="$(docker buildx imagetools inspect "${PINNED}" --format '{{json (index .Image "linux/amd64")}}')"
+          VER="$(printf '%s\n' "$JSON" | jq -r '.config.Labels["org.opencontainers.image.version"] // empty')"
+          if [ -z "$VER" ] || [ "$VER" = "null" ]; then
+            echo 'Could not read org.opencontainers.image.version from upstream OpenClaw image.' >&2
+            exit 1
+          fi
+          echo "openclaw_version=${VER}" >> "$GITHUB_OUTPUT"
+          echo "version_tag=v${VER}" >> "$GITHUB_OUTPUT"
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -60,11 +71,13 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=latest
+            type=raw,value=${{ steps.upstream.outputs.version_tag }}
             type=schedule,pattern=weekly-{{date 'YYYYMMDD'}}
             type=sha,prefix=,format=short
           labels: |
             org.opencontainers.image.base.name=${{ env.OPENCLAW_IMAGE }}:latest
             org.opencontainers.image.base.digest=${{ steps.upstream.outputs.digest }}
+            dev.openclaw.upstream-version=${{ steps.upstream.outputs.openclaw_version }}
 
       - name: Build and push
         uses: docker/build-push-action@v6
