@@ -4,8 +4,11 @@
 name: Docker weekly
 
 on:
+  push:
+    branches:
+      - main
   schedule:
-    # Mondays 06:15 UTC — pick a quiet slot; adjust as you like
+    # Mondays 06:15 UTC
     - cron: "15 6 * * 1"
   workflow_dispatch:
 
@@ -39,7 +42,7 @@ jobs:
       - name: Resolve upstream `latest` digest
         id: upstream
         run: |
-          DIGEST="$(docker buildx imagetools inspect "${OPENCLAW_IMAGE}:latest" --format '{{print .Digest}}')"
+          DIGEST="$(docker buildx imagetools inspect "${OPENCLAW_IMAGE}:latest" --format '{{.Manifest.Digest}}')"
           echo "digest=${DIGEST}" >> "$GITHUB_OUTPUT"
           echo "OPENCLAW_BASE=${OPENCLAW_IMAGE}:latest@${DIGEST}" >> "$GITHUB_ENV"
 
