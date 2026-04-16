@@ -35,7 +35,7 @@ RUN apt-get update \
     && PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/local/bin pipx install nano-pdf \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=gobins /tmp/bin/sonos /tmp/bin/blogwatcher /tmp/bin/gog /usr/local/bin/
+COPY --from=gobins /tmp/bin/blogwatcher /tmp/bin/gog /usr/local/bin/
 
 RUN npm install -g --prefix /usr/local mcporter
 
