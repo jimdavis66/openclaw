@@ -14,6 +14,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     && go install github.com/Hyaxia/blogwatcher/cmd/blogwatcher@latest \
     && go install github.com/steipete/gifgrep/cmd/gifgrep@latest \
     && go install github.com/steipete/goplaces/cmd/goplaces@latest \
+    && go install github.com/steipete/spogo/cmd/spogo@latest \
     && go install github.com/steipete/gogcli/cmd/gog@latest
 
 FROM ${OPENCLAW_BASE}
@@ -37,7 +38,7 @@ RUN apt-get update \
     && PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/local/bin pipx install nano-pdf \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=gobins /tmp/bin/blogwatcher /tmp/bin/gifgrep /tmp/bin/gog /tmp/bin/goplaces /usr/local/bin/
+COPY --from=gobins /tmp/bin/blogwatcher /tmp/bin/gifgrep /tmp/bin/gog /tmp/bin/goplaces /tmp/bin/spogo /usr/local/bin/
 
 RUN npm install -g --prefix /usr/local mcporter summarize
 
