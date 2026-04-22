@@ -28,6 +28,7 @@ RUN apt-get update \
         curl \
         jq \
         pipx \
+        ripgrep \
         vim-tiny \
     && install -m 0755 -d /etc/apt/keyrings \
     && curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
