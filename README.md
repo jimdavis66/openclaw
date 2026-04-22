@@ -9,7 +9,7 @@ The [`Dockerfile`](Dockerfile) extends the upstream gateway image and installs t
 | Layer | Purpose |
 | --- | --- |
 | **Go build stage** (`cgr.dev/chainguard/go:latest-dev`) | Static binaries built with `CGO_ENABLED=0` and copied into the final image: `blogwatcher`, `gifgrep`, `gog`, `goplaces`, `spogo` |
-| **apt** | `ca-certificates`, `curl`, `jq`, `pipx`, and **GitHub CLI** (`gh`) from GitHub’s official apt repo |
+| **apt** | `ca-certificates`, `curl`, `jq`, `pipx`, `vim-tiny` for `vi`, and **GitHub CLI** (`gh`) from GitHub’s official apt repo |
 | **pipx** | **`nano-pdf`** — Python CLI installed with `PIPX_BIN_DIR=/usr/local/bin` so executables are on the default `PATH` for the runtime user |
 | **npm** | **`mcporter`** and **`summarize`** installed globally under `/usr/local` |
 
