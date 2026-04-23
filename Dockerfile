@@ -3,6 +3,7 @@
 # Bump OPENCLAW_BASE in compose build args when you upgrade the upstream tag.
 
 ARG OPENCLAW_BASE=ghcr.io/openclaw/openclaw:latest
+ARG AGENT_BROWSER_HOME=/home/node
 
 FROM cgr.dev/chainguard/go:latest-dev AS gobins
 ENV GOTOOLCHAIN=auto \
@@ -44,6 +45,9 @@ RUN apt-get update \
 
 COPY --from=gobins /tmp/bin/blogwatcher /tmp/bin/gifgrep /tmp/bin/gog /tmp/bin/goplaces /tmp/bin/spogo /usr/local/bin/
 
-RUN npm install -g --prefix /usr/local mcporter summarize
+RUN npm install -g --prefix /usr/local agent-browser mcporter summarize \
+    && mkdir -p ${AGENT_BROWSER_HOME}/.cache \
+    && HOME=${AGENT_BROWSER_HOME} XDG_CACHE_HOME=${AGENT_BROWSER_HOME}/.cache agent-browser install --with-deps \
+    && chown -R node:node ${AGENT_BROWSER_HOME}
 
 USER node
