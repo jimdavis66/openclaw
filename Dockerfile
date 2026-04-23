@@ -3,7 +3,6 @@
 # Bump OPENCLAW_BASE in compose build args when you upgrade the upstream tag.
 
 ARG OPENCLAW_BASE=ghcr.io/openclaw/openclaw:latest
-ARG AGENT_BROWSER_HOME=/home/node
 
 FROM cgr.dev/chainguard/go:latest-dev AS gobins
 ENV GOTOOLCHAIN=auto \
@@ -20,16 +19,53 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 
 FROM ${OPENCLAW_BASE}
 
+ARG AGENT_BROWSER_HOME=/home/node
+
 USER root
 
 RUN apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
+        fonts-freefont-ttf \
+        fonts-noto-cjk \
+        fonts-noto-color-emoji \
+        libasound2 \
+        libatk-bridge2.0-0 \
+        libatk1.0-0 \
+        libatspi2.0-0 \
         ca-certificates \
+        libcairo-gobject2 \
+        libcairo2 \
+        libcups2 \
+        libdbus-1-3 \
+        libdrm2 \
+        libfontconfig1 \
+        libfreetype6 \
+        libgbm1 \
+        libgdk-pixbuf-2.0-0 \
+        libgtk-3-0 \
         curl \
         jq \
+        libnspr4 \
+        libnss3 \
+        libpango-1.0-0 \
+        libpangocairo-1.0-0 \
         pipx \
         ripgrep \
+        libx11-6 \
+        libx11-xcb1 \
+        libxcb-shm0 \
+        libxcb1 \
+        libxcomposite1 \
+        libxcursor1 \
+        libxdamage1 \
+        libxext6 \
+        libxfixes3 \
+        libxi6 \
+        libxkbcommon0 \
+        libxrandr2 \
+        libxrender1 \
+        libxshmfence1 \
         vim-tiny \
     && install -m 0755 -d /etc/apt/keyrings \
     && curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
@@ -47,7 +83,7 @@ COPY --from=gobins /tmp/bin/blogwatcher /tmp/bin/gifgrep /tmp/bin/gog /tmp/bin/g
 
 RUN npm install -g --prefix /usr/local agent-browser mcporter summarize \
     && mkdir -p ${AGENT_BROWSER_HOME}/.cache \
-    && HOME=${AGENT_BROWSER_HOME} XDG_CACHE_HOME=${AGENT_BROWSER_HOME}/.cache agent-browser install --with-deps \
+    && HOME=${AGENT_BROWSER_HOME} XDG_CACHE_HOME=${AGENT_BROWSER_HOME}/.cache agent-browser install \
     && chown -R node:node ${AGENT_BROWSER_HOME}
 
 USER node

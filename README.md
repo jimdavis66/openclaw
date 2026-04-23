@@ -9,9 +9,9 @@ The [`Dockerfile`](Dockerfile) extends the upstream gateway image and installs t
 | Layer | Purpose |
 | --- | --- |
 | **Go build stage** (`cgr.dev/chainguard/go:latest-dev`) | Static binaries built with `CGO_ENABLED=0` and copied into the final image: `blogwatcher`, `gifgrep`, `gog`, `goplaces`, `spogo` |
-| **apt** | `ca-certificates`, `curl`, `jq`, `pipx`, `ripgrep` for `rg`, `vim-tiny` for `vi`, and **GitHub CLI** (`gh`) from GitHub’s official apt repo |
+| **apt** | `ca-certificates`, `curl`, `jq`, browser runtime libraries/fonts for `agent-browser`, `pipx`, `ripgrep` for `rg`, `vim-tiny` for `vi`, and **GitHub CLI** (`gh`) from GitHub’s official apt repo |
 | **pipx** | **`nano-pdf`** and **`uv`** — Python CLIs installed with `PIPX_BIN_DIR=/usr/local/bin` so executables are on the default `PATH` for the runtime user |
-| **npm** | **`agent-browser`**, **`mcporter`**, and **`summarize`** installed globally under `/usr/local`; the image build also runs `agent-browser install --with-deps` so Chrome and Linux browser deps are available in-container |
+| **npm** | **`agent-browser`**, **`mcporter`**, and **`summarize`** installed globally under `/usr/local`; the image build also runs `agent-browser install` so Chrome is preloaded in-container |
 
 Upstream base tag is parameterized as `OPENCLAW_BASE` (default `ghcr.io/openclaw/openclaw:latest`) so you can pin a digest or version when upgrading.
 
